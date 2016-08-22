@@ -35,8 +35,12 @@ class ItemAdmin(admin.ModelAdmin):
     pass
 
 
+class ItemInline(admin.StackedInline):
+    model = QuantityItem
+    extra = 0
+
 class InventoryAdmin(admin.ModelAdmin):
-    pass
+    inlines = (ItemInline,)
 
 
 class EquipmentAdmin(admin.ModelAdmin):

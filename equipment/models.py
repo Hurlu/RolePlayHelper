@@ -57,8 +57,9 @@ class ItemCase(models.Model):
 class ItemGrid(models.Model):
     width = models.IntegerField(_('Width'))
     height = models.IntegerField(_('Height'))
-    case0 = models.ForeignKey(ItemCase, verbose_name=_('Case0'), related_name=_('origin'))
-    cases = models.ManyToManyField(ItemCase, verbose_name=_('Cases'), related_name=_('case'))
+    origin_case = models.OneToOneField(ItemCase, verbose_name=_('Origin case'), related_name=_('origin'))
+    cases = models.ManyToManyField(ItemCase, verbose_name=_('Cases'),
+                                   blank=True, limit_choices_to={'itemgrid__id': id(object)})
 
     def __str__(self):
         return 'Item grid'
@@ -67,34 +68,33 @@ class ItemGrid(models.Model):
 class Item(models.Model):
     name = models.CharField(_('Name'), max_length=67)
     flavor_text = models.TextField(_('Flavor text'))
-    quantity = models.IntegerField(_('Quantity'), default=1)
-    is_stackable = models.BooleanField(_('Is stackable'))
     itemgrid = models.ForeignKey(ItemGrid)
 
     def __str__(self):
         return self.name
 
 
-class Inventory(models.Model):
-    items = models.ManyToManyField('QuantityItem', verbose_name=_('Items'), through='QuantityItem',
-                                   related_name=_('invent_item'))
-
-    def __str__(self):
-        return 'Inventory'
-
-
 class QuantityItem(models.Model):
-    items = models.ForeignKey('Item', verbose_name=_('Items'))
-    quantity = models.IntegerField(_('Quantity'), default=1)
+    items = models.ForeignKey(Item, verbose_name=_('Items'))
     inventory = models.ForeignKey('Inventory')
+    quantity = models.IntegerField(_('Quantity'), default=1)
 
     def __str__(self):
         return 'Quantity'
 
 
+class Inventory(models.Model):
+    items = models.ManyToManyField(Item, verbose_name=_('Items'), through=QuantityItem,
+                                   related_name=_('invent_item'), blank=True)
+
+    def __str__(self):
+        return 'Inventory'
+
+
 class Boon(models.Model):
     name = models.CharField(_('Name'), max_length=40)
     flavor_text = models.TextField(_('Flavor text'))
+    picture = FilerImageField()
 
     def __str__(self):
         return self.name
@@ -104,7 +104,7 @@ class DefensiveEquipment(Item):
     type = models.ForeignKey(ItemType, verbose_name=_('Type'), related_name=_('armortype'))
     defensive_value = models.IntegerField(_('Defensive value'))
     boon_value = models.IntegerField(_('Boon value'))
-    boon = models.ManyToManyField(Boon, verbose_name=_('Boon'), related_name=_('armorboon'))
+    boon = models.ManyToManyField(Boon, verbose_name=_('Boon'), related_name=_('armorboon'), blank=True)
 
 
 class OffensiveEquipment(Item):
@@ -112,24 +112,25 @@ class OffensiveEquipment(Item):
     defensive_value = models.IntegerField(_('Defensive value'))
     attack_value = models.IntegerField(_('Attack value'))
     boon_value = models.IntegerField(_('Boon value'))
-    boon = models.ManyToManyField(Boon, verbose_name=_('Boon'), related_name=_('weaponboon'))
-    skills = models.ManyToManyField(Skill, verbose_name=_('Skills'), related_name=_('weaponskill'))
+    boon = models.ManyToManyField(Boon, verbose_name=_('Boon'), related_name=_('weaponboon'), blank=True)
+    skills = models.ManyToManyField(Skill, verbose_name=_('Skills'), related_name=_('weaponskill')
+                                    , blank=True)
 
 
 class Equipment(models.Model):
-    weapon = models.ForeignKey(OffensiveEquipment, verbose_name=_('Weapon'), related_name=_('Weapon'))
+    weapon = models.ForeignKey(OffensiveEquipment, verbose_name=_('Weapon'), related_name=_('Weapon'), blank=True)
     head = models.ForeignKey(DefensiveEquipment, limit_choices_to={'type__name': 'head'}, verbose_name=_('Head'),
-                             related_name=_('head'))
+                             related_name=_('head'), blank=True)
     torso = models.ForeignKey(DefensiveEquipment, limit_choices_to={'type__name': 'torso'}, verbose_name=_('Torso'),
-                              related_name=_('torso'))
+                              related_name=_('torso'), blank=True)
     left_arm = models.ForeignKey(DefensiveEquipment, limit_choices_to={'type__name': 'left_arm'},
-                                 verbose_name=_('Left arm'), related_name=_('left_arm'))
+                                 verbose_name=_('Left arm'), related_name=_('left_arm'), blank=True)
     left_leg = models.ForeignKey(DefensiveEquipment, limit_choices_to={'type__name': 'left_leg'},
-                                 verbose_name=_('Left leg'), related_name=_('left_leg'))
+                                 verbose_name=_('Left leg'), related_name=_('left_leg'), blank=True)
     right_arm = models.ForeignKey(DefensiveEquipment, limit_choices_to={'type__name': 'right_arm'},
-                                  verbose_name=_('Right arm'), related_name=_('right_arm'))
+                                  verbose_name=_('Right arm'), related_name=_('right_arm'), blank=True)
     right_leg = models.ForeignKey(DefensiveEquipment, limit_choices_to={'type__name': 'right_leg'},
-                                  verbose_name=_('Right leg'), related_name=_('right_leg'))
+                                  verbose_name=_('Right leg'), related_name=_('right_leg'), blank=True)
 
     def __str__(self):
         return 'Equipment'
@@ -138,6 +139,7 @@ class Equipment(models.Model):
 class LifeStatus(models.Model):
     name = models.CharField(_('Name'), max_length=50)
     flavor_text = models.TextField(_('Flavor text'))
+    picture = FilerImageField()
 
     def __str__(self):
         return self.name
@@ -149,7 +151,7 @@ class Status(models.Model):
     life_right_arm = models.IntegerField(_('Right arm\'s HP'), default=100)
     life_left_leg = models.IntegerField(_('Left leg\'s HP'), default=100)
     life_right_leg = models.IntegerField(_('Right leg\'s HP'), default=100)
-    life_status = models.ManyToManyField(LifeStatus, verbose_name=_('Life status'))
+    life_status = models.ManyToManyField(LifeStatus, verbose_name=_('Life status'), blank=True)
 
     def __str__(self):
         return 'Status'
@@ -166,22 +168,11 @@ class Stats(models.Model):
     def __str__(self):
         return 'Stats'
 
-
-class PlayerForm(ModelForm):
-
-    class Meta:
-        widgets = {
-            'skills': Select2Widget(),
-        }
-
-
 class Player(models.Model):
-    form = PlayerForm
-
     first_name = models.CharField(_('First name'), max_length=30)
     last_name = models.CharField(_('Last name'), max_length=30)
     nickname = models.CharField(_('Nickname'), max_length=30)
-    skills = models.ManyToManyField(Skill, verbose_name=_('Skills'))
+    skills = models.ManyToManyField(Skill, verbose_name=_('Skills'), blank=True)
     inventory = models.OneToOneField(Inventory, verbose_name=_('Inventory'))
     equipment = models.OneToOneField(Equipment, verbose_name=_('Equipment'))
     status = models.OneToOneField(Status, verbose_name=_('Status'))

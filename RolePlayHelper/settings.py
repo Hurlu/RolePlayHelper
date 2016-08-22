@@ -124,7 +124,7 @@ SUIT_CONFIG = {
      'MENU': (
          '-',
          {'label': 'Players', 'icon' : 'icon-user', 'url': '/admin/equipment/player'},
-         {'label': 'Items', 'icon' : 'icon-inbox', 'url': '/admin/equipment/item'},
+         {'label': 'Items', 'icon' : 'icon-inbox', 'url': '/admin/equipment/itemgrid'},
 '-',
          {'label': 'Weapons', 'icon' : 'icon-wrench', 'url': '/admin/equipment/offensiveequipment'},
          {'label': 'Armors', 'icon' : 'icon-hdd', 'url': '/admin/equipment/defensiveequipment'},
