@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import *
+from django.utils.translation import ugettext_lazy as _
 # Register your models here.
 
 
@@ -36,8 +37,9 @@ class ItemAdmin(admin.ModelAdmin):
 
 
 class ItemInline(admin.StackedInline):
-    model = QuantityItem
+    model = SingleItem
     extra = 0
+
 
 class InventoryAdmin(admin.ModelAdmin):
     inlines = (ItemInline,)
@@ -64,13 +66,38 @@ class SkillStepAdmin(admin.ModelAdmin):
 
 
 class SkillAdmin(admin.ModelAdmin):
-    pass
+    fieldsets = (
+        (_('General'), {
+            'fields': ('name', 'cost', 'flavor_text', 'steps'),
+            'classes': ('suit-tab', 'suit-tab-general',)
+        }),
+        (_('Skill Grid'), {
+            'fields': ('grid', ),
+            'classes': ('suit-tab', 'suit-tab-grid',)
+        })
+    )
+
+    suit_form_tabs = (('general', (_('General'))), ('grid', _('Skillgrid')))
 
 
 class BoonAdmin(admin.ModelAdmin):
     pass
 
 
+class SkillsInline(admin.TabularInline):
+    extra = 1
+    model = SkillInstance
+
+class PlayerSkillsAdmin(admin.ModelAdmin):
+    inlines = (SkillsInline,)
+
+
+class SkillInstanceAdmin(admin.ModelAdmin):
+    pass
+
+
+admin.site.register(SkillInstance, SkillInstanceAdmin)
+admin.site.register(PlayerSkills, PlayerSkillsAdmin)
 admin.site.register(SkillStep, SkillStepAdmin)
 admin.site.register(SkillGrid, SkillGridAdmin)
 admin.site.register(Skill, SkillAdmin)

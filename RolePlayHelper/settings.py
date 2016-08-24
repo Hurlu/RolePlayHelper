@@ -56,7 +56,6 @@ ROOT_URLCONF = 'RolePlayHelper.urls'
 
 WSGI_APPLICATION = 'RolePlayHelper.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
@@ -86,7 +85,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = '/static/'
+STATIC_ROOT = 'static/'
+
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = 'media/'
 
 TEMPLATES = [
     {
@@ -124,7 +127,7 @@ SUIT_CONFIG = {
      'MENU': (
          '-',
          {'label': 'Players', 'icon' : 'icon-user', 'url': '/admin/equipment/player'},
-         {'label': 'Items', 'icon' : 'icon-inbox', 'url': '/admin/equipment/itemgrid'},
+         {'label': 'Items', 'icon' : 'icon-inbox', 'url': '/admin/equipment/item'},
 '-',
          {'label': 'Weapons', 'icon' : 'icon-wrench', 'url': '/admin/equipment/offensiveequipment'},
          {'label': 'Armors', 'icon' : 'icon-hdd', 'url': '/admin/equipment/defensiveequipment'},
@@ -148,4 +151,4 @@ THUMBNAIL_PROCESSORS = (
     'filer.thumbnail_processors.scale_and_crop_with_subject_location',
     'easy_thumbnails.processors.filters',
 )
-FILER_CANONICAL_URL = 'sharing/'
+

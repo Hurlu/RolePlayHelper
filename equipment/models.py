@@ -1,9 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.forms import ModelForm
-from django.forms import widgets
 from filer.fields.image import FilerImageField
-from django_select2.forms import Select2Widget
 # Create your models here.
 
 
@@ -30,12 +27,28 @@ class Skill(models.Model):
     name = models.CharField(_('Name'), max_length=30)
     cost = models.IntegerField(_('Cost'))
     flavor_text = models.TextField(_('Flavor text'))
-    xp = models.IntegerField(_('XP'))
     steps = models.ManyToManyField(SkillStep, verbose_name=_('Steps'))
     grid = models.ForeignKey(SkillGrid, verbose_name=_('Skill grid'))
 
     def __str__(self):
         return self.name
+
+
+class SkillInstance(models.Model):
+    skill = models.ForeignKey(Skill)
+    xp = models.IntegerField(_('Xp'), default=0)
+    playerskill = models.ForeignKey('PlayerSkills')
+
+
+class PlayerSkills(models.Model):
+    skills = models.ManyToManyField(Skill, verbose_name=_('Skills'),
+                                    blank=True, through=SkillInstance)
+
+    def __str__(self):
+        try:
+            return self.player.first_name + '\'s Skills'
+        except:
+            return 'Anonymous skillsheet :,('
 
 
 class ItemType(models.Model):
@@ -46,9 +59,9 @@ class ItemType(models.Model):
 
 
 class ItemCase(models.Model):
-    pic = FilerImageField(verbose_name=_('Picture'))
     pos_x = models.IntegerField(_('Pos X'))
     pos_y = models.IntegerField(_('Pos Y'))
+    pic = FilerImageField(verbose_name=_('Picture'))
 
     def __str__(self):
         return 'Case [{}, {}]'.format(self.pos_x, self.pos_y)
@@ -63,7 +76,7 @@ class ItemGrid(models.Model):
 
     def __str__(self):
         return 'Item grid'
-
+    
 
 class Item(models.Model):
     name = models.CharField(_('Name'), max_length=67)
@@ -74,21 +87,26 @@ class Item(models.Model):
         return self.name
 
 
-class QuantityItem(models.Model):
+class SingleItem(models.Model):
     items = models.ForeignKey(Item, verbose_name=_('Items'))
     inventory = models.ForeignKey('Inventory')
     quantity = models.IntegerField(_('Quantity'), default=1)
+    origin_position_x = models.IntegerField(_('Pos X'))
+    origin_position_y = models.IntegerField(_('Pos Y'))
 
     def __str__(self):
         return 'Quantity'
 
 
 class Inventory(models.Model):
-    items = models.ManyToManyField(Item, verbose_name=_('Items'), through=QuantityItem,
+    items = models.ManyToManyField(Item, verbose_name=_('Items'), through=SingleItem,
                                    related_name=_('invent_item'), blank=True)
 
     def __str__(self):
-        return 'Inventory'
+        try:
+            return self.player.first_name + '\'s inventory'
+        except:
+            return 'Anonymous inventory :,('
 
 
 class Boon(models.Model):
@@ -113,27 +131,30 @@ class OffensiveEquipment(Item):
     attack_value = models.IntegerField(_('Attack value'))
     boon_value = models.IntegerField(_('Boon value'))
     boon = models.ManyToManyField(Boon, verbose_name=_('Boon'), related_name=_('weaponboon'), blank=True)
-    skills = models.ManyToManyField(Skill, verbose_name=_('Skills'), related_name=_('weaponskill')
-                                    , blank=True)
+    skills = models.ManyToManyField(Skill, verbose_name=_('Skills'), related_name=_('weaponskill'),
+                                    blank=True)
 
 
 class Equipment(models.Model):
-    weapon = models.ForeignKey(OffensiveEquipment, verbose_name=_('Weapon'), related_name=_('Weapon'), blank=True)
+    weapon = models.ForeignKey(OffensiveEquipment, verbose_name=_('Weapon'), related_name=_('Weapon'), blank=True, null=True)
     head = models.ForeignKey(DefensiveEquipment, limit_choices_to={'type__name': 'head'}, verbose_name=_('Head'),
-                             related_name=_('head'), blank=True)
+                             related_name=_('head'), blank=True, null=True)
     torso = models.ForeignKey(DefensiveEquipment, limit_choices_to={'type__name': 'torso'}, verbose_name=_('Torso'),
-                              related_name=_('torso'), blank=True)
+                              related_name=_('torso'), blank=True, null=True)
     left_arm = models.ForeignKey(DefensiveEquipment, limit_choices_to={'type__name': 'left_arm'},
-                                 verbose_name=_('Left arm'), related_name=_('left_arm'), blank=True)
+                                 verbose_name=_('Left arm'), related_name=_('left_arm'), blank=True, null=True)
     left_leg = models.ForeignKey(DefensiveEquipment, limit_choices_to={'type__name': 'left_leg'},
-                                 verbose_name=_('Left leg'), related_name=_('left_leg'), blank=True)
+                                 verbose_name=_('Left leg'), related_name=_('left_leg'), blank=True, null=True)
     right_arm = models.ForeignKey(DefensiveEquipment, limit_choices_to={'type__name': 'right_arm'},
-                                  verbose_name=_('Right arm'), related_name=_('right_arm'), blank=True)
+                                  verbose_name=_('Right arm'), related_name=_('right_arm'), blank=True, null=True)
     right_leg = models.ForeignKey(DefensiveEquipment, limit_choices_to={'type__name': 'right_leg'},
-                                  verbose_name=_('Right leg'), related_name=_('right_leg'), blank=True)
+                                  verbose_name=_('Right leg'), related_name=_('right_leg'), blank=True, null=True)
 
     def __str__(self):
-        return 'Equipment'
+        try:
+            return self.player.first_name + '\'s Equipment'
+        except:
+            return 'Anonymous equipment :,('
 
 
 class LifeStatus(models.Model):
@@ -154,7 +175,10 @@ class Status(models.Model):
     life_status = models.ManyToManyField(LifeStatus, verbose_name=_('Life status'), blank=True)
 
     def __str__(self):
-        return 'Status'
+        try:
+            return self.player.first_name + '\'s Status'
+        except:
+            return 'Anonymous status :,('
 
 
 class Stats(models.Model):
@@ -166,17 +190,22 @@ class Stats(models.Model):
     craftiness = models.IntegerField(_('Craftiness'))
     
     def __str__(self):
-        return 'Stats'
+        try:
+            return self.player.first_name + '\'s Stats'
+        except:
+            return 'Anonymous stats :,('
+
+
 
 class Player(models.Model):
     first_name = models.CharField(_('First name'), max_length=30)
     last_name = models.CharField(_('Last name'), max_length=30)
     nickname = models.CharField(_('Nickname'), max_length=30)
-    skills = models.ManyToManyField(Skill, verbose_name=_('Skills'), blank=True)
-    inventory = models.OneToOneField(Inventory, verbose_name=_('Inventory'))
-    equipment = models.OneToOneField(Equipment, verbose_name=_('Equipment'))
-    status = models.OneToOneField(Status, verbose_name=_('Status'))
-    stats = models.OneToOneField(Stats, verbose_name=_('Stats'))
+    skills = models.OneToOneField(PlayerSkills, verbose_name=_('Skills'), blank=True, related_name='player')
+    inventory = models.OneToOneField(Inventory, verbose_name=_('Inventory'), related_name='player')
+    equipment = models.OneToOneField(Equipment, verbose_name=_('Equipment'), related_name='player')
+    status = models.OneToOneField(Status, verbose_name=_('Status'), related_name='player')
+    stats = models.OneToOneField(Stats, verbose_name=_('Stats'), related_name='player')
     
     def __str__(self):
         return "{} \'{}\' {}".format(self.first_name, self.nickname, self.last_name)
