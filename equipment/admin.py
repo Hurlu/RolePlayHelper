@@ -4,9 +4,6 @@ from django.utils.translation import ugettext_lazy as _
 # Register your models here.
 
 
-class SkillGridAdmin(admin.ModelAdmin):
-    pass
-
 
 class ItemCaseAdmin(admin.ModelAdmin):
     pass
@@ -63,6 +60,11 @@ class LifeStatusAdmin(admin.ModelAdmin):
 
 class SkillStepAdmin(admin.ModelAdmin):
     pass
+
+
+class SkillGridAdmin(admin.ModelAdmin):
+    change_form_template = 'admin/equipment/skillgrid/change_form.html'
+    suit_form_includes = ('')
 
 
 class SkillAdmin(admin.ModelAdmin):

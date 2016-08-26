@@ -14,10 +14,10 @@ class SkillStep(models.Model):
 
 
 class SkillGrid(models.Model):
-    width = models.IntegerField(_('Width of grid'))
-    height = models.IntegerField(_('Height of grid'))
-    primary_effect_cases = []
-    secondary_effect_cases = []
+    width = models.IntegerField()
+    height = models.IntegerField()
+    primary_effect_cases = models.CharField(max_length=500)
+    secondary_effect_cases = models.CharField(max_length=500)
 
     def __str__(self):
         return 'Skill grid'
