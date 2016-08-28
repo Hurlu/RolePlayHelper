@@ -1,5 +1,8 @@
 from django.contrib import admin
+from django_select2.forms import Select2MultipleWidget
+from django_select2.forms import Select2Widget
 from .models import *
+from django.forms import ModelForm
 from django.utils.translation import ugettext_lazy as _
 # Register your models here.
 
@@ -46,8 +49,15 @@ class EquipmentAdmin(admin.ModelAdmin):
     pass
 
 
+class PlayerForm(ModelForm):
+    class Meta:
+        widgets = {
+            'skills': Select2MultipleWidget(),
+        }
+
+
 class PlayerAdmin(admin.ModelAdmin):
-    pass
+    form = PlayerForm
 
 
 class StatusAdmin(admin.ModelAdmin):

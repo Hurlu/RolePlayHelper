@@ -1,4 +1,38 @@
 {% extends 'admin/change_form.html' %}
+{% load i18n numeric_forloop %}
+
+
+{% block field_sets %}
+    <div id="hidden_fields" hidden>
+    {{ adminform.form.height }}
+    {{ adminform.form.width }}
+    {{ adminform.form.primary_effect_cases }}
+    {{ adminform.form.secondary_effect_cases }}
+    </div>
+    <h1 align="left">{% trans 'Set the Skill grid up :' %}</h1>
+    <div class="row-fluid" style="height: 10em">
+        <div class="span3">
+            <h3>Set height : </h3>
+            <input type="number" title="" id="set_height" style="width:60px;">
+        </div>
+        <div class="span3">
+            <h3> Set width: </h3>
+            <input type="number" title="" id="set_width" style="width:60px;">
+        </div>
+    </div>
+
+    <div id="Skillgrid">
+    {% if original.height and original.width %}
+    {% for y in original.height|get_range %}
+        {% for x in original.width|get_range %}
+            <div class="neutralcase">
+            </div>
+        {% endfor %}
+        <br/>
+    {% endfor %}
+    {% endif  %}
+    </div>
+{% endblock %}
 
 {% block extrajs %}
 {{ block.super }}
@@ -6,14 +40,136 @@
 
 <script type="text/javascript">
 
+function get_height(){
+    return parseInt($('#id_height').val())
+}
 
-    $(function () {
-        var center = $('.inner-center-column');
-        center.attr('hidden', 'hidden')
+function get_width(){
+    return parseInt($('#id_width').val())
+}
 
+function get_prim(){
+    return $('#id_primary_effect_cases').val();
+}
+
+function get_sec(){
+    return $('#id_secondary_effect_cases').val();
+}
+
+
+
+// Functions handling the caseclick reaction
+
+function checkPlayerCase()
+{
+    var retval = false;
+    $('div #Skillgrid').children().each(function () {
+        if ($(this).hasClass('playercase'))
+            retval = true;
+    });
+    return retval
+}
+
+function changeCase(playcase, playclass){
+    if (playclass == "neutralcase"){
+        if (checkPlayerCase() == true)
+            playcase.addClass('primarycase');
+        else
+            playcase.addClass('playercase')
+
+    }
+    else if (playclass == "playercase"){
+        console.log("Playcase to neutralcase");
+        playcase.addClass('neutralcase')
+    }
+    else if (playclass == "primarycase")
+    {
+        console.log("Primarycase changing!");
+        playcase.addClass('secondarycase')
+    }
+    else if (playclass == "secondarycase"){
+        playcase.addClass('neutralcase')
+    }
+}
+
+
+
+$(function () {
+    var width = $('#set_width');
+    var height = $('#set_height');
+    width.val(get_width());
+    height.val(get_height());
+    height.change(function () {
+        $('#id_height').val($(this).val())
+
+    });
+    width.change(function () {
+        $('#id_width').val($(this).val())
+    });
+
+    // React to click on case
+
+
+    $(document).on('click', '.playercase', function (e) {
+        console.log('Clicked on player case !');
+        $(this).removeClass('playercase');
+        changeCase($(this), 'playercase');
+        e.preventDefault(e);
     });
 
 
+    $(document).on('click', '.neutralcase', function (e) {
+        console.log('Clicked on neutral case !');
+        $(this).removeClass('neutralcase');
+        changeCase($(this), "neutralcase");
+        e.preventDefault(e);
+    });
+
+    $(document).on('click', '.primarycase',function (e) {
+        console.log('Clicked on primary case !');
+        $(this).removeClass('primarycase');
+        changeCase($(this), 'primarycase');
+        e.preventDefault(e);
+    });
+
+    $(document).on('click', '.secondarycase', function (e) {
+        console.log('Clicked on secondary !');
+        $(this).removeClass('secondarycase');
+        changeCase($(this), 'secondarycase');
+        e.preventDefault(e);
+    });
+});
 
 </script>
+    <style>
+        .neutralcase{
+            width: 50px;
+            height: 50px;
+            border: 1px solid #000000;
+            display: inline-block;
+            background-color: #FFFFFF;
+        }
+
+
+        .playercase{
+            width: 50px; height: 50px; border: 1px solid #000000; display: inline-block;
+            background-color: #08ff28;
+        }
+
+        .primarycase{
+            width: 50px; height: 50px; border: 1px solid #000000; display: inline-block;
+            background-color : #ff2d27
+        }
+
+        .secondarycase{
+            width: 50px; height: 50px; border: 1px solid #000000; display: inline-block;
+            background-color: #2b30ff;
+        }
+
+
+        .input-xxxs{width:18px;}
+        .input-xxs{width:32px;}
+        .input-xs{width:40px;}
+    </style>
+
 {% endblock %}
