@@ -4,10 +4,10 @@
 
 {% block field_sets %}
     <div id="hidden_fields" hidden>
-    {{ adminform.form.height }}
-    {{ adminform.form.width }}
-    {{ adminform.form.primary_effect_cases }}
-    {{ adminform.form.secondary_effect_cases }}
+        {{ adminform.form.height }}
+        {{ adminform.form.width }}
+        {{ adminform.form.primary_effect_cases }}
+        {{ adminform.form.secondary_effect_cases }}
     </div>
     <h1 align="left">{% trans 'Set the Skill grid up :' %}</h1>
     <div class="row-fluid" style="height: 10em">
@@ -22,125 +22,141 @@
     </div>
 
     <div id="Skillgrid">
-    {% if original.height and original.width %}
-    {% for y in original.height|get_range %}
-        {% for x in original.width|get_range %}
-            <div class="neutralcase">
-            </div>
-        {% endfor %}
-        <br/>
-    {% endfor %}
-    {% endif  %}
+        {% if original.height and original.width %}
+            {% for y in original.height|get_range %}
+                <div id="row{{ y }}">
+                    {% for x in original.width|get_range %}
+                        <div data-name="case{{ x }}" id="{{ x }}, {{ y }}"  class="neutralcase">
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        {% endif  %}
     </div>
 {% endblock %}
 
 {% block extrajs %}
-{{ block.super }}
+    {{ block.super }}
 
 
-<script type="text/javascript">
+    <script type="text/javascript">
 
-function get_height(){
-    return parseInt($('#id_height').val())
-}
+        function get_height(){
+            return parseInt($('#id_height').val())
+        }
 
-function get_width(){
-    return parseInt($('#id_width').val())
-}
+        function get_width(){
+            return parseInt($('#id_width').val())
+        }
 
-function get_prim(){
-    return $('#id_primary_effect_cases').val();
-}
+        function get_prim(){
+            return $('#id_primary_effect_cases').val();
+        }
 
-function get_sec(){
-    return $('#id_secondary_effect_cases').val();
-}
-
-
-
-// Functions handling the caseclick reaction
-
-function checkPlayerCase()
-{
-    var retval = false;
-    $('div #Skillgrid').children().each(function () {
-        if ($(this).hasClass('playercase'))
-            retval = true;
-    });
-    return retval
-}
-
-function changeCase(playcase, playclass){
-    if (playclass == "neutralcase"){
-        if (checkPlayerCase() == true)
-            playcase.addClass('primarycase');
-        else
-            playcase.addClass('playercase')
-
-    }
-    else if (playclass == "playercase"){
-        console.log("Playcase to neutralcase");
-        playcase.addClass('neutralcase')
-    }
-    else if (playclass == "primarycase")
-    {
-        console.log("Primarycase changing!");
-        playcase.addClass('secondarycase')
-    }
-    else if (playclass == "secondarycase"){
-        playcase.addClass('neutralcase')
-    }
-}
+        function get_sec(){
+            return $('#id_secondary_effect_cases').val();
+        }
 
 
 
-$(function () {
-    var width = $('#set_width');
-    var height = $('#set_height');
-    width.val(get_width());
-    height.val(get_height());
-    height.change(function () {
-        $('#id_height').val($(this).val())
+        // Functions handling the caseclick reaction
 
-    });
-    width.change(function () {
-        $('#id_width').val($(this).val())
-    });
+        function checkPlayerCase()
+        {
+            var retval = false;
+            $('div #Skillgrid').children().each(function () {
+                if ($(this).hasClass('playercase'))
+                    retval = true;
+            });
+            return retval
+        }
 
-    // React to click on case
+        function changeCase(playcase, playclass){
+            if (playclass == "neutralcase"){
+                if (checkPlayerCase() == true)
+                    playcase.addClass('primarycase');
+                else
+                    playcase.addClass('playercase')
+
+            }
+            else if (playclass == "playercase"){
+                console.log("Playcase to neutralcase");
+                playcase.addClass('neutralcase')
+            }
+            else if (playclass == "primarycase")
+            {
+                console.log("Primarycase changing!");
+                playcase.addClass('secondarycase')
+            }
+            else if (playclass == "secondarycase"){
+                playcase.addClass('neutralcase')
+            }
+        }
 
 
-    $(document).on('click', '.playercase', function (e) {
-        console.log('Clicked on player case !');
-        $(this).removeClass('playercase');
-        changeCase($(this), 'playercase');
-        e.preventDefault(e);
-    });
+
+        $(function () {
+            var width = $('#set_width');
+            var height = $('#set_height');
+            width.val(get_width());
+            height.val(get_height());
+            height.change(function () {
+                console.log("Changed height!");
+                var actual_height = $('#id_height').val();
+                var new_height = $(this).val();
+                $('#id_height').val($(this).val());
+                var x = 0;
+                $("[id^='row']").each(function () {
+                    if (x >= new_height){
+                        $(this).remove()
+                    }
+                    x++;
+                })
+                while (x < new_height - 1){
+                    $('#Skillgrid').last().after('<div class=\"row' + x.toString() + '\"></div>');
+                    x++;
+                }
+            });
 
 
-    $(document).on('click', '.neutralcase', function (e) {
-        console.log('Clicked on neutral case !');
-        $(this).removeClass('neutralcase');
-        changeCase($(this), "neutralcase");
-        e.preventDefault(e);
-    });
+            width.change(function () {
+                $('#id_width').val($(this).val())
+            });
+        });
 
-    $(document).on('click', '.primarycase',function (e) {
-        console.log('Clicked on primary case !');
-        $(this).removeClass('primarycase');
-        changeCase($(this), 'primarycase');
-        e.preventDefault(e);
-    });
+        // React to click on case
 
-    $(document).on('click', '.secondarycase', function (e) {
-        console.log('Clicked on secondary !');
-        $(this).removeClass('secondarycase');
-        changeCase($(this), 'secondarycase');
-        e.preventDefault(e);
-    });
-});
 
-</script>
+        $(document).on('click', '.playercase', function (e) {
+            console.log('Clicked on player case !');
+            $(this).removeClass('playercase');
+            changeCase($(this), 'playercase');
+            e.preventDefault(e);
+        });
+
+
+        $(document).on('click', '.neutralcase', function (e) {
+            console.log('Clicked on neutral case !');
+            $(this).removeClass('neutralcase');
+            changeCase($(this), "neutralcase");
+            e.preventDefault(e);
+        });
+
+        $(document).on('click', '.primarycase',function (e) {
+            console.log('Clicked on primary case !');
+            $(this).removeClass('primarycase');
+            changeCase($(this), 'primarycase');
+            e.preventDefault(e);
+        });
+
+        $(document).on('click', '.secondarycase', function (e) {
+            console.log('Clicked on secondary !');
+            $(this).removeClass('secondarycase');
+            changeCase($(this), 'secondarycase');
+            e.preventDefault(e);
+        });
+
+    </script>
     <style>
         .neutralcase{
             width: 50px;
