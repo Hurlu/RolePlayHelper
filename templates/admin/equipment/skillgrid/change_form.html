@@ -64,10 +64,12 @@
         function checkPlayerCase()
         {
             var retval = false;
-            $('div #Skillgrid').children().each(function () {
+            $('div #Skillgrid').find('div').each(function () {
                 if ($(this).hasClass('playercase'))
                     retval = true;
+                console.log(this)
             });
+            console.log("Retval is ", retval);
             return retval
         }
 
@@ -94,15 +96,36 @@
         }
 
 
-
         $(function () {
             var width = $('#set_width');
             var height = $('#set_height');
             width.val(get_width());
             height.val(get_height());
+
+            width.change(function () {
+                var new_width = $(this).val();
+                $('#id_width').val($(this).val());
+                var x = 0;
+                var y = 0;
+                $("[id^='row']").each(function ()
+                {
+                    x = 0;
+                    $(this).children().each(function () {
+                        if (x >= new_width)
+                            $(this).remove();
+                        x++;
+                    });
+                    while (x < new_width ) {
+                        $(this).append(' <div class=\"neutralcase\" ' +
+                                'data-name=\"case' + x.toString() + "\" id=\"" +
+                                x.toString() + ", " + y.toString() + "\"</div>");
+                        x++;
+                    }
+                    y++;
+                });
+            });
+
             height.change(function () {
-                console.log("Changed height!");
-                var actual_height = $('#id_height').val();
                 var new_height = $(this).val();
                 $('#id_height').val($(this).val());
                 var x = 0;
@@ -111,10 +134,22 @@
                         $(this).remove()
                     }
                     x++;
-                })
-                while (x < new_height - 1){
-                    $('#Skillgrid').last().after('<div class=\"row' + x.toString() + '\"></div>');
+                });
+                var y = 0;
+                while (x < new_height){
+                    $('#Skillgrid').children().last().after('<div id=\"row' + x.toString() + '\"></div>');
+                    while (y < width.val())
+                    {
+                        $('#Skillgrid').children().last().append(
+                                '<div class=\"neutralcase\" data-name=\"case' +
+                                y.toString() + "\" id=\"" + y.toString() + ", " +
+                                x.toString() + "\"></div>" +
+                                " "
+                        );
+                        y++;
+                    }
                     x++;
+                    y = 0;
                 }
             });
 

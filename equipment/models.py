@@ -14,8 +14,8 @@ class SkillStep(models.Model):
 
 
 class SkillGrid(models.Model):
-    width = models.IntegerField()
-    height = models.IntegerField()
+    width = models.IntegerField(default=3)
+    height = models.IntegerField(default=3)
     primary_effect_cases = models.CharField(max_length=500, default="[]")
     secondary_effect_cases = models.CharField(max_length=500, default="[]")
 
