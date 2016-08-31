@@ -6,6 +6,7 @@
     <div id="hidden_fields" hidden>
         {{ adminform.form.height }}
         {{ adminform.form.width }}
+        {{ adminform.form.playercase }}
         {{ adminform.form.primary_effect_cases }}
         {{ adminform.form.secondary_effect_cases }}
     </div>
@@ -34,6 +35,36 @@
         {% endif  %}
     </div>
 {% endblock %}
+
+{% block extrastyle %}
+    {{ block.super }}
+
+    <style>
+        .neutralcase{
+            width: 50px;
+            height: 50px;
+            border: 1px solid #000000;
+            display: inline-block;
+            background-color: #FFFFFF;
+        }
+
+        .playercase{
+            width: 50px; height: 50px; border: 1px solid #000000; display: inline-block;
+            background-color: #08ff28;
+        }
+
+        .primarycase{
+            width: 50px; height: 50px; border: 1px solid #000000; display: inline-block;
+            background-color : #ff2d27
+        }
+
+        .secondarycase{
+            width: 50px; height: 50px; border: 1px solid #000000; display: inline-block;
+            background-color: #2b30ff;
+        }
+    </style>
+
+{% endblock extrastyle %}
 
 {% block extrajs %}
     {{ block.super }}
@@ -67,9 +98,7 @@
             $('div #Skillgrid').find('div').each(function () {
                 if ($(this).hasClass('playercase'))
                     retval = true;
-                console.log(this)
             });
-            console.log("Retval is ", retval);
             return retval
         }
 
@@ -82,12 +111,10 @@
 
             }
             else if (playclass == "playercase"){
-                console.log("Playcase to neutralcase");
                 playcase.addClass('neutralcase')
             }
             else if (playclass == "primarycase")
             {
-                console.log("Primarycase changing!");
                 playcase.addClass('secondarycase')
             }
             else if (playclass == "secondarycase"){
@@ -101,6 +128,8 @@
             var height = $('#set_height');
             width.val(get_width());
             height.val(get_height());
+
+            // Changement de la largeur
 
             width.change(function () {
                 var new_width = $(this).val();
@@ -125,6 +154,8 @@
                 });
             });
 
+            // Changement de la hauteur
+
             height.change(function () {
                 var new_height = $(this).val();
                 $('#id_height').val($(this).val());
@@ -137,7 +168,7 @@
                 });
                 var y = 0;
                 while (x < new_height){
-                    $('#Skillgrid').children().last().after('<div id=\"row' + x.toString() + '\"></div>');
+                    $('#Skillgrid').append('<div id=\"row' + x.toString() + '\"></div>');
                     while (y < width.val())
                     {
                         $('#Skillgrid').children().last().append(
@@ -153,17 +184,67 @@
                 }
             });
 
+            // Registering primary and secondary values
 
-            width.change(function () {
-                $('#id_width').val($(this).val())
-            });
+            $('button').on('click', function () {
+                primary.val("[]");
+                secondary.val("[]");
+                play.val("[]");
+                $("#Skillgrid").find("div").each(function () {
+                    if ($(this).hasClass('neutralcase') == false)
+                    {
+                        var x = $(this).attr("id")[0];
+                        var y = $(this).attr("id")[3];
+                    }
+                    if ($(this).hasClass('playercase')){
+                        play.val('[' + x + ', ' + y + ']');
+                    }
+                    else if ($(this).hasClass('primarycase')){
+                        if (primary.val() == "[]")
+                            primary.val('[' + x + ', ' + y + ']');
+                        else {
+                            var val = primary.val();
+                            var newval = [val.slice(0, val.length - 1), ', ' + x + ', ' + y , val.slice(val.length - 1)].join('');
+                            primary.val(newval)
+                        }
+                    }
+                    else if ($(this).hasClass('secondarycase')){
+                        if (secondary.val() == "[]")
+                            secondary.val('[' + x + ', ' + y + ']');
+                        else {
+                            var val = secondary.val();
+                            var newval = [val.slice(0, val.length - 1), ', ' + x + ', ' + y , val.slice(val.length - 1)].join('');
+                            secondary.val(newval)
+                        }
+                    }
+                })
+            })
+
+            // Initializing cases
+
+            function init_cases(array, type)
+            {
+                for (var x = 0; x < array.length; x+= 2) {
+                    var caseid = array[x] + ", " + array[x + 1];
+                    $('[id="'+caseid+'"]').addClass(type).removeClass("neutralcase");
+                }
+            }
+
+            var primary = $("#id_primary_effect_cases");
+            var prim = JSON.parse(primary.val());
+            var secondary = $("#id_secondary_effect_cases");
+            var sec = JSON.parse(secondary.val());
+            var play = $("#id_playercase");
+            var ply = JSON.parse(play.val());
+            init_cases(prim, "primarycase");
+            init_cases(sec, "secondarycase");
+            init_cases(ply, "playercase");
         });
 
         // React to click on case
 
 
         $(document).on('click', '.playercase', function (e) {
-            console.log('Clicked on player case !');
             $(this).removeClass('playercase');
             changeCase($(this), 'playercase');
             e.preventDefault(e);
@@ -171,56 +252,23 @@
 
 
         $(document).on('click', '.neutralcase', function (e) {
-            console.log('Clicked on neutral case !');
             $(this).removeClass('neutralcase');
             changeCase($(this), "neutralcase");
             e.preventDefault(e);
         });
 
         $(document).on('click', '.primarycase',function (e) {
-            console.log('Clicked on primary case !');
             $(this).removeClass('primarycase');
             changeCase($(this), 'primarycase');
             e.preventDefault(e);
         });
 
         $(document).on('click', '.secondarycase', function (e) {
-            console.log('Clicked on secondary !');
             $(this).removeClass('secondarycase');
             changeCase($(this), 'secondarycase');
             e.preventDefault(e);
         });
 
+
     </script>
-    <style>
-        .neutralcase{
-            width: 50px;
-            height: 50px;
-            border: 1px solid #000000;
-            display: inline-block;
-            background-color: #FFFFFF;
-        }
-
-
-        .playercase{
-            width: 50px; height: 50px; border: 1px solid #000000; display: inline-block;
-            background-color: #08ff28;
-        }
-
-        .primarycase{
-            width: 50px; height: 50px; border: 1px solid #000000; display: inline-block;
-            background-color : #ff2d27
-        }
-
-        .secondarycase{
-            width: 50px; height: 50px; border: 1px solid #000000; display: inline-block;
-            background-color: #2b30ff;
-        }
-
-
-        .input-xxxs{width:18px;}
-        .input-xxs{width:32px;}
-        .input-xs{width:40px;}
-    </style>
-
 {% endblock %}
