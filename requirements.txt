@@ -1,0 +1,15 @@
+Django==1.8.14
+django-appconf==1.0.2
+django-filer==1.2.4
+django-mptt==0.8.5
+django-polymorphic==0.8.1
+django-rosetta==0.7.12
+Django-Select2==5.8.9
+django-suit==0.2.19
+easy-thumbnails==2.3
+microsofttranslator==0.8
+Pillow==3.3.1
+polib==1.0.7
+requests==2.11.0
+six==1.10.0
+Unidecode==0.4.19

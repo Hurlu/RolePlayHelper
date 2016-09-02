@@ -83,6 +83,7 @@ class Item(models.Model):
     name = models.CharField(_('Name'), max_length=67)
     flavor_text = models.TextField(_('Flavor text'))
     itemgrid = models.ForeignKey(ItemGrid)
+    image = FilerImageField(verbose_name=_('Picture'))
 
     def __str__(self):
         return self.name
