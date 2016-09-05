@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from filer.fields.image import FilerImageField
+from django.contrib.auth.models import User
 # Create your models here.
 
 
@@ -208,6 +209,7 @@ class Player(models.Model):
     equipment = models.OneToOneField(Equipment, verbose_name=_('Equipment'), related_name='player')
     status = models.OneToOneField(Status, verbose_name=_('Status'), related_name='player')
     stats = models.OneToOneField(Stats, verbose_name=_('Stats'), related_name='player')
+    user = models.OneToOneField(User, verbose_name=_('User'), related_name='player')
     
     def __str__(self):
         return "{} \'{}\' {}".format(self.first_name, self.nickname, self.last_name)

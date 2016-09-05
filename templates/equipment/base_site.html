@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+{% load static %}
+    <meta charset="UTF-8">
+
+    {% block extrajs %}
+        <!-- Mettre Jquery dans le tas. C'est pratique ce truc: -->
+    {% endblock %}
+
+    {% block extracss %}
+        <link rel="text/css" href="{% static "equipment/css/base.css" %}">
+        <!-- Mettre bootstrap par ici packe j'men sers y paraît -->
+    {% endblock %}
+
+</head>
+<body>
+{% block content %}
+{% endblock %}
+</body>
+</html>
