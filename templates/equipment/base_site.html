@@ -2,16 +2,20 @@
 <html lang="en">
 <head>
 
-{% load static %}
     <meta charset="UTF-8">
 
     {% block extrajs %}
-        <!-- Mettre Jquery dans le tas. C'est pratique ce truc: -->
+        {% load staticfiles static %}
+        <script src="{% static "plugins/jquery-3.1.0.min.js" %}"></script>
+        <script src="{% static "plugins/jquery-ui.min.js" %}"></script>
+        <script src="{% static "plugins/bootstrap.min.js" %}"></script>
     {% endblock %}
 
     {% block extracss %}
-        <link rel="text/css" href="{% static "equipment/css/base.css" %}">
-        <!-- Mettre bootstrap par ici packe j'men sers y paraît -->
+        <link rel="stylesheet" type="text/css" href="{% static "equipment/css/base.css" %}">
+        <link rel="stylesheet" type="text/css" href="{% static "plugins/bootstrap.min.css" %}">
+        <link rel="stylesheet" type="text/css" href="{% static "plugins/bootstrap-theme.min.css" %}">
+        <link rel="stylesheet" type="text/css" href="{% static "plugins/jquery-ui.structure.min.css" %}">
     {% endblock %}
 
 </head>

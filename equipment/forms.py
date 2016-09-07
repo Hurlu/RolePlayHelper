@@ -1,14 +1,8 @@
-from django.forms import ModelForm
+from django.forms import Form
 from django.contrib.auth import authenticate, login
 from django.forms import fields
+from django.forms.widgets import PasswordInput
 
-class LoginForm(ModelForm):
+class LoginForm(Form):
     login = fields.CharField(max_length=100)
-    password = fields.CharField(max_length=100)
-
-    def clear_form(self):
-        user = authenticate(self.login, self.password)
-        if user is None:
-            raise AuthentificationError(_('Wrong credentials!'))
-        else:
-            login(user)
+    password = fields.CharField(max_length=100, widget=PasswordInput())

@@ -1,8 +1,14 @@
-{% extends "equipment/index.html" %}
-
+{% extends "equipment/base_site.html" %}
+{% load static staticfiles %}
 {% block content %}
-{% if user.is_authenticated %}
-
-{% else %}
-    {{ form.loginform }}
-{% endif %}
+    {% if user.is_authenticated %}
+        Salut {{ user }} ! Pour te déconnecter, c'est ici : <a href="/logout">Log out</a>
+    {% else %}
+        Connecte toi sale sac!
+        <form method="post">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit">Se connecter!</button>
+        </form>
+    {% endif %}
+{% endblock content %}
