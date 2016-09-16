@@ -50,11 +50,7 @@ class EquipmentAdmin(admin.ModelAdmin):
 
 
 class PlayerForm(ModelForm):
-    class Meta:
-        widgets = {
-            'skills': Select2MultipleWidget(),
-        }
-
+    pass
 
 class PlayerAdmin(admin.ModelAdmin):
     form = PlayerForm

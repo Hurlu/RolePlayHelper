@@ -29,7 +29,7 @@ class Skill(models.Model):
     name = models.CharField(_('Name'), max_length=30)
     cost = models.IntegerField(_('Cost'))
     flavor_text = models.TextField(_('Flavor text'))
-    steps = models.ManyToManyField(SkillStep, verbose_name=_('Steps'))
+    steps = models.ManyToManyField(SkillStep, verbose_name=_('Steps'), blank=True)
     grid = models.ForeignKey(SkillGrid, verbose_name=_('Skill grid'))
 
     def __str__(self):
@@ -63,7 +63,7 @@ class ItemType(models.Model):
 class ItemCase(models.Model):
     pos_x = models.IntegerField(_('Pos X'))
     pos_y = models.IntegerField(_('Pos Y'))
-    pic = FilerImageField(verbose_name=_('Picture'))
+    pic = FilerImageField(verbose_name=_('Picture'), blank=True, null=True)
 
     def __str__(self):
         return 'Case [{}, {}]'.format(self.pos_x, self.pos_y)
@@ -74,7 +74,7 @@ class ItemGrid(models.Model):
     height = models.IntegerField(_('Height'))
     origin_case = models.OneToOneField(ItemCase, verbose_name=_('Origin case'), related_name=_('origin'))
     cases = models.ManyToManyField(ItemCase, verbose_name=_('Cases'),
-                                   blank=True, limit_choices_to={'itemgrid__id': id(object)})
+                                   blank=True)
 
     def __str__(self):
         return 'Item grid'
@@ -84,7 +84,7 @@ class Item(models.Model):
     name = models.CharField(_('Name'), max_length=67)
     flavor_text = models.TextField(_('Flavor text'))
     itemgrid = models.ForeignKey(ItemGrid)
-    image = FilerImageField(verbose_name=_('Picture'))
+    image = FilerImageField(verbose_name=_('Picture'), null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -115,7 +115,7 @@ class Inventory(models.Model):
 class Boon(models.Model):
     name = models.CharField(_('Name'), max_length=40)
     flavor_text = models.TextField(_('Flavor text'))
-    picture = FilerImageField()
+    picture = FilerImageField(blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -163,7 +163,7 @@ class Equipment(models.Model):
 class LifeStatus(models.Model):
     name = models.CharField(_('Name'), max_length=50)
     flavor_text = models.TextField(_('Flavor text'))
-    picture = FilerImageField()
+    picture = FilerImageField(null=True, blank=True)
 
     def __str__(self):
         return self.name
