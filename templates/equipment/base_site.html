@@ -1,15 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load staticfiles static %}
 
     <meta charset="UTF-8">
-
-    {% block extrajs %}
-        {% load staticfiles static %}
-        <script src="{% static "plugins/jquery-3.1.0.min.js" %}"></script>
-        <script src="{% static "plugins/jquery-ui.min.js" %}"></script>
-        <script src="{% static "plugins/bootstrap.min.js" %}"></script>
-    {% endblock %}
 
     {% block extracss %}
         <link rel="stylesheet" type="text/css" href="{% static "equipment/css/base.css" %}">
@@ -17,6 +11,14 @@
         <link rel="stylesheet" type="text/css" href="{% static "plugins/bootstrap-theme.min.css" %}">
         <link rel="stylesheet" type="text/css" href="{% static "plugins/jquery-ui.structure.min.css" %}">
     {% endblock %}
+
+    {% block extrajs %}
+        <script src="{% static "plugins/jquery-3.1.0.min.js" %}"></script>
+        <script src="{% static "plugins/bootstrap.min.js" %}"></script>
+        <script src="{% static "plugins/jquery-ui.min.js" %}"></script>
+    {% endblock %}
+
+
 
 </head>
 <body>

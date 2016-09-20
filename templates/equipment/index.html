@@ -4,11 +4,11 @@
     {% if user.is_authenticated %}
         Salut {{ user }} ! Pour te déconnecter, c'est ici : <a href="/logout">Log out</a>
     {% else %}
-        Connecte toi sale sac!
+        Connecte toi ! Sinon, je laisse la page moche comme ça :)
         <form method="post">
-        {% csrf_token %}
-        {{ form }}
-        <button type="submit">Se connecter!</button>
+            {% csrf_token %}
+            {{ form }}
+            <button type="submit" >Se connecter!</button>
         </form>
     {% endif %}
 {% endblock content %}

@@ -191,6 +191,7 @@ class Stats(models.Model):
     eloquence = models.IntegerField(_('Eloquence'))
     instinct = models.IntegerField(_('Instinct'))
     craftiness = models.IntegerField(_('Craftiness'))
+    #karma = models.IntegerField(_('Karma'))
     
     def __str__(self):
         try:

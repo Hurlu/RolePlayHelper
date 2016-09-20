@@ -1,0 +1,124 @@
+{% extends "equipment/base_site.html" %}
+{% load static staticfiles %}
+{% block extracss %}
+    {{ block.super }}
+    <style>
+        progress,          /* All HTML5 progress enabled browsers */
+        progress[role]     /* polyfill */
+        {
+            /* Turns off styling - not usually needed, but good to know. */
+            -moz-appearance: none;
+            -webkit-appearance: none;
+
+            /* gets rid of default border in Firefox and Opera. */
+            border: none;
+
+        }
+
+        /* Polyfill */
+        progress[aria-valuenow]:before  {
+            background: black;
+        }
+    progress[value]{
+        -webkit-appearance: none;
+    }
+
+        progress::-moz-progress-bar{
+            background: rgb(221,0,0);
+            background: -moz-linear-gradient(left,  rgba(221,0,0,1) 0%, rgba(191,133,0,1) 33%, rgba(190,193,0,1) 61%, rgba(0,110,46,1) 100%);
+            background: -webkit-linear-gradient(left,  rgba(221,0,0,1) 0%,rgba(191,133,0,1) 33%,rgba(190,193,0,1) 61%,rgba(0,110,46,1) 100%);
+            background: linear-gradient(to right,  rgba(221,0,0,1) 0%,rgba(191,133,0,1) 33%,rgba(190,193,0,1) 61%,rgba(0,110,46,1) 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dd0000', endColorstr='#006e2e',GradientType=1 );
+        }
+    </style>
+{% endblock extracss %}
+{% block content %}
+    <div class="container-fluid">
+    <div class="row-fluid">
+        <div class="col-xs-12">
+            Welcome sur la page de la fiche de personnage! Pour te déco, c'est ici : <a href="/logout">Log out</a>
+        </div>
+    </div>
+        <div class="row-fluid">
+            <div class="col-xs-4">
+                <h2 align="center"> Statistiques et statut: </h2>
+                <div class="row-fluid">
+                    <div class="col-xs-6">
+                    <p><strong> Force </strong> : {{ player.stats.strength }}</p>
+                    <p><strong> Dextérité </strong> : {{ player.stats.dexterity }}</p>
+                    <p><strong> Instinct </strong> : {{ player.stats.instinct }}</p>
+                    <p><strong> Débrouillardise </strong> : {{ player.stats.craftiness }}</p>
+                    <p><strong> Intelligence </strong> : {{ player.stats.intelligence }}</p>
+                    <p><strong> Éloquence </strong> : {{ player.stats.eloquence }}</p>
+                    {% comment %}<p>Karma : {{ player.stats.karma }}</p>{% endcomment %}
+                    </div>
+                    <div class="col-xs-6">
+                    <p> État du joueur: </p>
+                    <div>
+                        {% if player.status.life_status.all %}
+                            {% for each in player.status.life_status.all %}
+                                <div>
+                                    {% if each.picture %}
+                                        <img height="50px" width="50px" src="{{ each.picture }}" title="{{ each.flavor_text }}"/>
+                                    {% endif %}
+                                    <a style="color: black;" {% if not each.picture %}title="{{ each.flavor_text }}" {% endif %} >
+                                        <strong> {{ each.name }} </strong>
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            Pas empoisonné, ni ensorcelé, ni entrain de saigner... Niquel! <strong> Tout va bien! </strong>
+                        {% endif %}
+                    </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-6">
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="col-xs-6">
+                <div class="row-fluid">
+                    <div id="head" class="col-xs-6 col-xs-offset-3">
+                        <progress class="aria-valuenow" id="life_head" value="{{ player.status.life_head }}" max="{{ player.stats.strength }}"></progress>
+                        Tête
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="col-xs-4" id="left_arm">
+                        Bras droit
+                    </div>
+                    <div id="torso" class="col-xs-4">
+                        Torse
+                    </div>
+                    <div id="right_arm" class="col-xs-4">
+                        Bras gauche
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div id="left_leg" class="col-xs-offset-1 col-xs-5">
+                        Jambe gauche
+                    </div>
+                    <div id="right_arm"class="col-xs-5">
+                        Jambe droite
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-6">
+
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block extrajs %}
+    {{ block.super }}
+    <script>
+    $(function () {
+        $(document).tooltip();
+    })
+    </script>
+{% endblock %}
