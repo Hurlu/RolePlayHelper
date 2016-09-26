@@ -1,0 +1,48 @@
+progress,          /* All HTML5 progress enabled browsers */
+progress[role]     /* polyfill */
+{
+    /* Turns off styling - not usually needed, but good to know. */
+    -moz-appearance: none;
+    -webkit-appearance: none;
+
+    /* gets rid of default border in Firefox and Opera. */
+    border: none;
+
+}
+
+/* Polyfill */
+progress[aria-valuenow]:before  {
+    background: black;
+}
+progress[value]{
+    -webkit-appearance: none;
+}
+
+progress::-moz-progress-bar {
+    background: rgb(0,110,46);
+    background: -moz-linear-gradient(top, rgba(0,110,46,1) 0%, rgba(0,110,46,1) 100%);
+    background: -webkit-linear-gradient(top, rgba(0,110,46,1) 0%,rgba(0,110,46,1) 100%);
+    background: linear-gradient(to bottom, rgba(0,110,46,1) 0%,rgba(0,110,46,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#006e2e', endColorstr='#006e2e',GradientType=0 );
+}
+
+
+.equipmentrow{
+    height : auto
+}
+
+[id$=_equip]{
+    border: 1px solid #726d70;
+    height: 60px;
+    width: 60px;
+    position:relative;
+    left: 10%;
+    margin: 10px 0;
+}
+
+.itembox{
+    border: 1px solid #726d70;
+    height : 65px;
+    width : 65px;
+}
+

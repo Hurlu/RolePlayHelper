@@ -3,36 +3,56 @@
 {% block extracss %}
     {{ block.super }}
     <style>
-        progress,          /* All HTML5 progress enabled browsers */
-        progress[role]     /* polyfill */
-        {
-            /* Turns off styling - not usually needed, but good to know. */
-            -moz-appearance: none;
-            -webkit-appearance: none;
-
-            /* gets rid of default border in Firefox and Opera. */
-            border: none;
-
-        }
-
-        /* Polyfill */
-        progress[aria-valuenow]:before  {
-            background: black;
-        }
-    progress[value]{
-        -webkit-appearance: none;
+    .col-xs-2.boxing{
+        padding: 0;
+        width: 70px;
     }
-
-        progress::-moz-progress-bar{
-            background: rgb(221,0,0);
-            background: -moz-linear-gradient(left,  rgba(221,0,0,1) 0%, rgba(191,133,0,1) 33%, rgba(190,193,0,1) 61%, rgba(0,110,46,1) 100%);
-            background: -webkit-linear-gradient(left,  rgba(221,0,0,1) 0%,rgba(191,133,0,1) 33%,rgba(190,193,0,1) 61%,rgba(0,110,46,1) 100%);
-            background: linear-gradient(to right,  rgba(221,0,0,1) 0%,rgba(191,133,0,1) 33%,rgba(190,193,0,1) 61%,rgba(0,110,46,1) 100%);
-            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dd0000', endColorstr='#006e2e',GradientType=1 );
-        }
     </style>
-{% endblock extracss %}
+{% endblock %}
 {% block content %}
+
+    <div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+            Welcome sur la page de la fiche de personnage! Pour te déco, c'est ici : <a href="/logout">Log out</a>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+			<div class="row">
+				<div class="col-md-6">
+                    Stats
+				</div>
+				<div class="col-md-6">
+                    Status
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+            Inventory
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+            Equipment
+		</div>
+		<div class="col-md-6">
+            Skills
+		</div>
+	</div>
+</div>
+{% endblock content %}
+
+{% block extrajs %}
+    {{ block.super }}
+    <script>
+    $(function () {
+        $(document).tooltip();
+    })
+    </script>
+{% endblock %}
+
+{% comment %}
     <div class="container-fluid">
     <div class="row-fluid">
         <div class="col-xs-12">
@@ -42,7 +62,7 @@
         <div class="row-fluid">
             <div class="col-xs-4">
                 <h2 align="center"> Statistiques et statut: </h2>
-                <div class="row-fluid">
+                <div class="row-fluid" style="height: 175px">
                     <div class="col-xs-6">
                     <p><strong> Force </strong> : {{ player.stats.strength }}</p>
                     <p><strong> Dextérité </strong> : {{ player.stats.dexterity }}</p>
@@ -50,7 +70,7 @@
                     <p><strong> Débrouillardise </strong> : {{ player.stats.craftiness }}</p>
                     <p><strong> Intelligence </strong> : {{ player.stats.intelligence }}</p>
                     <p><strong> Éloquence </strong> : {{ player.stats.eloquence }}</p>
-                    {% comment %}<p>Karma : {{ player.stats.karma }}</p>{% endcomment %}
+                    <p>Karma : {{ player.stats.karma }}</p>
                     </div>
                     <div class="col-xs-6">
                     <p> État du joueur: </p>
@@ -73,52 +93,106 @@
 
                     </div>
                 </div>
+                <div class="row-fluid">
+                    <div class="col-xs-6">
+                        Teest Teest
+                    </div>
+                    <div class="col-xs-6">
+                        Test
+                    </div>
+                </div>
             </div>
-            <div class="col-xs-6">
+            <div class="col-xs-offset-2 col-xs-4">
+                <h2 align="center"> Inventaire et Skills</h2>
+                <h3> Inventaire :</h3>
+                <div class="row-fluid">
+                    <div class="row-fluid" style="margin-top:10%;">
+                        <div class="col-xs-2 boxing"><div class="itembox">O</div></div>
+                        <div class="col-xs-2 boxing"><div class="itembox">1</div></div>
+                        <div class="col-xs-2 boxing"><div class="itembox">2</div></div>
+                        <div class="col-xs-2 boxing"><div class="itembox">3</div></div>
+                        <div class="col-xs-2 boxing"><div class="itembox">4</div></div>
+                    </div>
+                    <br>
+                    <div class="row-fluid" style="margin-top:10%;">
+                        <div class="col-xs-2 boxing"><div class="itembox">O</div></div>
+                        <div class="col-xs-2 boxing"><div class="itembox">1</div></div>
+                        <div class="col-xs-2 boxing"><div class="itembox">2</div></div>
+                        <div class="col-xs-2 boxing"><div class="itembox">3</div></div>
+                        <div class="col-xs-2 boxing"><div class="itembox">4</div></div>
+                    </div>
+                    <br>
+                    <div class="row-fluid" style="margin-top:10%;">
+                        <div class="col-xs-2 boxing"><div class="itembox">O</div></div>
+                        <div class="col-xs-2 boxing"><div class="itembox">1</div></div>
+                        <div class="col-xs-2 boxing"><div class="itembox">2</div></div>
+                        <div class="col-xs-2 boxing"><div class="itembox">3</div></div>
+                        <div class="col-xs-2 boxing"><div class="itembox">4</div></div>
+                    </div>
+                    <br>
+                    <div class="row-fluid" style="margin-top:10%;">
+                        <div class="col-xs-2 boxing"><div class="itembox">O</div></div>
+                        <div class="col-xs-2 boxing"><div class="itembox">1</div></div>
+                        <div class="col-xs-2 boxing"><div class="itembox">2</div></div>
+                        <div class="col-xs-2 boxing"><div class="itembox">3</div></div>
+                        <div class="col-xs-2 boxing"><div class="itembox">4</div></div>
+                    </div>
+                    <br>
+                    <div class="row-fluid" style="margin-top:10%;">
+                        <div class="col-xs-2 boxing"><div class="itembox">O</div></div>
+                        <div class="col-xs-2 boxing"><div class="itembox">1</div></div>
+                        <div class="col-xs-2 boxing"><div class="itembox">2</div></div>
+                        <div class="col-xs-2 boxing"><div class="itembox">3</div></div>
+                        <div class="col-xs-2 boxing"><div class="itembox">4</div></div>
+                    </div>
+                </div>
+                <br><br><br><br>
+                <div class="row-fluid">
+                    <h3>Skills :</h3>
+                    {{ skillsselect }}
+                </div>
             </div>
         </div>
     </div>
     <div class="container-fluid">
         <div class="row-fluid">
             <div class="col-xs-6">
-                <div class="row-fluid">
+                <div class="row-fluid equipmentrow">
                     <div id="head" class="col-xs-6 col-xs-offset-3">
+                        <div class="equipmentbox" id="head_equip"></div>
                         <progress class="aria-valuenow" id="life_head" value="{{ player.status.life_head }}" max="{{ player.stats.strength }}"></progress>
-                        Tête
                     </div>
                 </div>
-                <div class="row-fluid">
+                <div class="row-fluid equipmentrow">
                     <div class="col-xs-4" id="left_arm">
                         Bras droit
+                        <div class="equipmentbox" id="leftarm_equip"></div>
+                        <progress class="aria-valuenow" id="life_leftarm" value="{{ player.status.life_left_arm }}" max="{{ player.stats.strength }}"></progress>
                     </div>
                     <div id="torso" class="col-xs-4">
                         Torse
+                        <div class="equipmentbox" id="torso_equip"></div>
+                        <progress class="aria-valuenow" id="life_torso" value="{{ player.status.life_torso }}" max="{{ player.stats.strength }}"></progress>
                     </div>
                     <div id="right_arm" class="col-xs-4">
                         Bras gauche
+                        <div class="equipmentbox" id="rigtharm_equip"></div>
+                        <progress class="aria-valuenow" id="life_rightarm" value="{{ player.status.life_right_arm }}" max="{{ player.stats.strength }}"></progress>
                     </div>
                 </div>
-                <div class="row-fluid">
+                <div class="row-fluid equipmentrow">
                     <div id="left_leg" class="col-xs-offset-1 col-xs-5">
                         Jambe gauche
+                        <div class="equipmentbox" id="rightleg_equip"></div>
+                        <progress class="aria-valuenow" id="life_leftleg" value="{{ player.status.life_left_leg }}" max="{{ player.stats.strength }}"></progress>
                     </div>
-                    <div id="right_arm"class="col-xs-5">
+                    <div id="right_leg" class="col-xs-5">
                         Jambe droite
+                        <div class="equipmentbox" id="leftleg_equip"></div>
+                        <progress class="aria-valuenow" id="life_leftarm" value="{{ player.status.life_right_leg }}" max="{{ player.stats.strength }}"></progress>
                     </div>
                 </div>
-            </div>
-            <div class="col-xs-6">
-
             </div>
         </div>
     </div>
-{% endblock content %}
-
-{% block extrajs %}
-    {{ block.super }}
-    <script>
-    $(function () {
-        $(document).tooltip();
-    })
-    </script>
-{% endblock %}
+{% endcomment %}
