@@ -10,6 +10,6 @@ easy-thumbnails==2.3
 microsofttranslator==0.8
 Pillow==6.2.0
 polib==1.0.7
-requests==2.11.0
+requests==2.20.0
 six==1.10.0
 Unidecode==0.4.19
